@@ -7,6 +7,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdatos:/var/lib/postgresql/data
+      - ./initdb/crear_tablas.sql:/docker-entrypoint-initdb.d/crear_tablas.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -34,14 +35,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
-      - mongodatos:/data/db                            
+      - mongodatos:/data/db                    
     ports:
       - "27017:27017"
     command: ["mongod", "--quiet"]
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
-      interval: 30s          
-      start_period: 30s      
+      interval: 30s           
+      start_period: 30s       
       start_interval: 2s     
       timeout: 5s
       retries: 5
