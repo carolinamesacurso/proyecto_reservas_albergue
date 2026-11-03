@@ -1,15 +1,4 @@
-"""Xerador de datos de proba para a rede de albergues Camiño Aberto (ficticia).
 
-ESQUELETO DO P1. Xa funciona: xera albergues e mostra un resumo. O resto
-das funcións están marcadas con TODO e, mentres non as completes, avisan
-e devolven unha lista baleira para que o script se poida executar desde o
-primeiro día.
-
-Exemplos (desde a raíz do proxecto):
-  python -m src.xera_datos --sen-carga                    # só xerar e mostrar
-  python -m src.xera_datos --albergues 60 --semente 7 --sen-carga
-  python -m src.xera_datos                                 # xerar e cargar (cando estea feito)
-"""
 import argparse
 import random
 from datetime import date, timedelta
@@ -39,12 +28,7 @@ def pendente(nome):
 
 # ------------------------------------------------------------------ xeración
 def xera_albergues(n, rng):
-    """EXEMPLO RESOLTO: úsao como modelo para o resto de funcións.
-
-    Devolve unha lista de dicionarios, un por albergue. Todo o azar sae de `rng`
-    (un random.Random), non do módulo `random` directamente: así a semente controla
-    o resultado.
-    """
+ 
     albergues = []
     for i in range(1, n + 1):
         camino = rng.choice(list(CAMIÑOS))
@@ -71,20 +55,7 @@ paises = {
 }
 
 def xera_peregrinos(n, rng, fake):
-    """TODO (primeiro paso): devolve `n` peregrinos.
-
-    Cada peregrino é un dicionario con, polo menos: id, nome, apelidos, documento,
-    email, pais e data_nacemento.
-
-    Pistas:
-      - fake.first_name() e fake.last_name() dan nomes realistas.
-      - Faker(["es_ES", "pt_PT", "de_DE"]) mestura idiomas, pero para saber o país
-        de cada peregrino é máis cómodo ter un Faker por país.
-      - O documento e o email deben ser únicos.
-      - Coidado coa reproducibilidade: fake.date_of_birth() depende da data de hoxe,
-        así que mañá xeraría datos distintos coa mesma semente.
-    """
-
+    
     # Relacionamos cada país cun idioma de Faker para que os nomes teñan sentido
     paises = {
         "España": "es_ES",
@@ -131,12 +102,7 @@ def xera_peregrinos(n, rng, fake):
     
 
 def xera_reservas(n, albergues, peregrinos, desde, dias, rng):
-    """TODO: devolve ata `n` reservas entre `desde` e `desde + dias - 1`.
-
-    Regras do negocio:
-      - Nun albergue, as reservas dunha noite non poden superar as súas prazas.
-      - Un peregrino non pode ter dúas reservas a mesma noite.
-    """
+    
     reservas = []
 
     # guardamos la ocupación de cada albergue por fecha
@@ -189,12 +155,8 @@ def xera_reservas(n, albergues, peregrinos, desde, dias, rng):
 
 
 def xera_fichas(albergues, rng, fake):
-    """TODO: devolve unha ficha por albergue para MongoDB.
-
-    Mira o exemplo do enunciado (apartado 4.2): os campos deben variar dun
-    albergue a outro (non todos teñen web, opinións, garaxe para bicis...).
-    """
-    # Aquí iremos guardando una ficha diferente para cada albergue
+    
+    # aqui iremos guardando una ficha diferente para cada albergue
     fichas = []
 
         # Recorremos los albergues que ya hemos generado anteriormente
@@ -205,7 +167,7 @@ def xera_fichas(albergues, rng, fake):
             
         }
 
-        # Elegimos algunos servicios para que no todos los albergues sean iguales
+        # elegimos algunos servicios para que no todos los albergues sean iguales
         servicios_disponibles = [
             "cocina",
             "lavadora",
