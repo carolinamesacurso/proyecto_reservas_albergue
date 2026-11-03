@@ -59,7 +59,9 @@ albergues = [
     ("Albergue Peregrino", "Portomarin", "Camino Frances", 30, 18.00),
     ("Santa Maria", "Palas de Rei", "Camino Frances", 20, 12.50),
     ("Albergue Santiago", "Melide", "Camino Frances", 35, 16.00),
-    ("Ultreia", "Tui", "Camino Portugues", 28, 14.00)
+    ("Ultreia", "Tui", "Camino Portugues", 28, 14.00),
+    ("prueba", "pruebac", "pruebaf", 2, 14.00)
+
 ]
 
 ids_albergues = []
@@ -89,7 +91,9 @@ reservas = [
     (ids_albergues[1], ids_peregrinos[1], "2026-11-05", 1),
     (ids_albergues[2], ids_peregrinos[2], "2026-11-06", 2),
     (ids_albergues[3], ids_peregrinos[3], "2026-11-07", 1),
-    (ids_albergues[4], ids_peregrinos[4], "2026-11-08", 3)
+    (ids_albergues[4], ids_peregrinos[4], "2026-11-08", 3),
+    (ids_albergues[5], ids_peregrinos[0], "2026-11-09", 1)
+
 ]
 
 for reserva in reservas:
