@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Datos de la prueba
-id_albergue = 1
-noche = '2026-11-05'
+id_albergue = 6
+noche = '2027-05-18'
 
 # 1. CONEXIONES
 

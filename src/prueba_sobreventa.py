@@ -1,13 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from src.reservas import reservar
+#Albergue 9 | Noche: 2027-05-20 | Plazas libres: 1
 
-albergue = 6
+albergue = 9
 
 # Peregrinos que no tienen otra reserva esa noche
-peregrinos = [2, 3, 4]
+peregrinos = [2,4]
 
-noche = "2026-11-09"
+noche = "2027-05-20"
 
 with ThreadPoolExecutor(max_workers=len(peregrinos)) as executor:
 
