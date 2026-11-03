@@ -130,7 +130,7 @@ Estos datos los utilizaremos para realizar las pruebas de reservas, las consulta
 
     ```powershell
       cd src
-      python reservas.py 1 5 2026-11-09
+      python reservas.py 1 18 2027-05-01
     ```
 
 ## 4. Decisiones de diseño
@@ -140,10 +140,10 @@ Estos datos los utilizaremos para realizar las pruebas de reservas, las consulta
 - Para la estructura de claves en redis seguimos este razonamiento:
 
   - Al necesitar una estructura donde mostrar las plazas libres de cada albergue por noche , crearemos una clave donde esta se una combinación del albergue por cada una de las noches.
-  - En el siguiente ejemplo mostramos un ejemplo de ello , mostrando el albergue 1 cuantas plazas libres tiene el día 2026-11-05
+  - En el siguiente ejemplo mostramos un ejemplo de ello , mostrando el albergue 1 cuantas plazas libres tiene el día 2027-05-01
 
   ```
-  GET plazas:albergue:3:2026-11-05
+  GET plazas:albergue:18:2027-05-01
   ```
 
 ### 4.2 TTL
@@ -262,16 +262,15 @@ python -m src.prueba_sobreventa
 
 ```
 No hay plazas disponibles.
-No hay plazas disponibles.
-Reserva realizada correctamente.
+    Reserva realizada correctamente.
 
---- RESULTADO DE LA PRUEBA ---
-Albergue: 6
-Noche: 2026-11-09
-Plazas iniciales: 1
-Solicitudes: 3
-Aceptadas: 1
-Rechazadas: 2
+    --- RESULTADO DE LA PRUEBA ---
+    Albergue: 9
+    Noche: 2027-05-20
+    Plazas iniciales: 1
+    Solicitudes: 2
+    Aceptadas: 1
+    Rechazadas: 1
 ```
 
 ## 6. Copias de seguridad
@@ -325,12 +324,13 @@ docker compose down -v
 docker compose up
 
 python medir_postgres_redis.py
-PostgreSQL: 24
-Redis: 24
+PostgreSQL: 15
+Redis: 15
 
 --- TIEMPOS DE CONSULTA ---
-PostgreSQL: 0.280031 ms de media
-Redis: 0.187290 ms de media
+PostgreSQL: 0.548431 ms de media
+Redis: 0.191276 ms de media
+
 ```
 
 - Conclusiones de esta prueba:
