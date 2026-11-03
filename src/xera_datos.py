@@ -1,11 +1,15 @@
 
 import argparse
 import random
+import os
+import psycopg2
 from datetime import date, timedelta
 
+from dotenv import load_dotenv
 
 from faker import Faker
 
+load_dotenv()
 # ------------------------------------------------------------------ catálogos
 # Concellos galegos de cada camiño, en orde de etapas. Podes engadir máis.
 CAMIÑOS = {
@@ -286,9 +290,68 @@ def xera_fichas(albergues, rng, fake):
 
 
 # ------------------------------------------------------------------ carga
+
 def carga_postgres(albergues, peregrinos, reservas):
-    """TODO: crea as táboas (ou usa un script SQL de inicio) e insire os datos."""
-    pendente("carga_postgres")
+    """Carga os albergues, peregrinos e reservas en PostgreSQL."""
+
+    pg = {
+        "host": os.getenv("PGHOST", "localhost"),
+        "port": int(os.getenv("PGPORT", 5432)),
+        "user": os.getenv("POSTGRES_USER", "bda"),
+        "password": os.getenv("POSTGRES_PASSWORD", "cambiame"),
+        "dbname": os.getenv("POSTGRES_DB", "festival"),
+    }
+
+    with psycopg2.connect(**pg) as con:
+        with con.cursor() as cur:
+
+            # Insertamos os albergues
+            for albergue in albergues:
+                cur.execute("""
+                    INSERT INTO albergues
+                    (id_albergue, nombre, camino, concello, plazas, precio)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (
+                    albergue["id"],
+                    albergue["nome"],
+                    albergue["camino"],
+                    albergue["concello"],
+                    albergue["prazas"],
+                    albergue["prezo"],
+                ))
+
+            # Insertamos os peregrinos
+            for peregrino in peregrinos:
+                cur.execute("""
+                    INSERT INTO peregrinos
+                    (id_peregrino, nombre, apellido, pais, email,
+                     documento_identidad, fecha_nacimiento)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    peregrino["id"],
+                    peregrino["nome"],
+                    peregrino["apelidos"],
+                    peregrino["pais"],
+                    peregrino["email"],
+                    peregrino["documento"],
+                    peregrino["data_nacemento"],
+                ))
+
+            # Insertamos as reservas
+            for reserva in reservas:
+                cur.execute("""
+                    INSERT INTO reservas
+                    (id_reserva, id_albergue, id_peregrino, fecha_desde, dias)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (
+                    reserva["id"],
+                    reserva["albergue_id"],
+                    reserva["peregrino_id"],
+                    reserva["fecha_desde"],
+                    reserva["dias"],
+                ))
+
+    print("Datos cargados correctamente en PostgreSQL.")
 
 
 def carga_mongo(fichas):
