@@ -194,7 +194,93 @@ def xera_fichas(albergues, rng, fake):
     Mira o exemplo do enunciado (apartado 4.2): os campos deben variar dun
     albergue a outro (non todos teñen web, opinións, garaxe para bicis...).
     """
-    return pendente("xera_fichas")
+    # Aquí iremos guardando una ficha diferente para cada albergue
+    fichas = []
+
+        # Recorremos los albergues que ya hemos generado anteriormente
+    for albergue in albergues:
+        ficha = {
+            "albergue_id": albergue["id"],
+            "nombre": albergue["nome"],
+            
+        }
+
+        # Elegimos algunos servicios para que no todos los albergues sean iguales
+        servicios_disponibles = [
+            "cocina",
+            "lavadora",
+            "wifi",
+            "almuerzo",
+        ]
+
+        cantidad_servicios = rng.randint(1, len(servicios_disponibles))
+        ficha["servicios"] = rng.sample(
+            servicios_disponibles, cantidad_servicios
+        )
+
+        # generamos un horario sencillo de apertura y cierre
+        hora_apertura = rng.randint(11, 15)
+        hora_cierre = rng.randint(21, 23)
+
+        ficha["horario"] = {
+            "apertura": f"{hora_apertura:02d}:00",
+            "cierre": f"{hora_cierre:02d}:00",
+        }
+
+        # algunos albergues tienen datos de contacto y otros no
+        if rng.random() < 0.6:
+            ficha["contacto"] = {
+                "telefono": fake.phone_number(),
+                "web": fake.url(),
+            }
+
+        # no todos los albergues tienen información sobre si admiten perros
+        if rng.random() < 0.5:
+            ficha["admite_perros"] = rng.choice([True, False])
+
+        # algunos tienen un espacio específico para guardar bicicletas
+        if rng.random() < 0.6:
+            ficha["bicicletas"] = {
+                "garaje": rng.choice([True, False]),
+                "plazas": rng.randint(4, 20),
+            }
+
+        # cada albergue puede atender en uno o varios idiomas
+        idiomas_disponibles = ["gallego", "castellano", "inglés"]
+        cantidad_idiomas = rng.randint(1, len(idiomas_disponibles))
+        ficha["idiomas"] = rng.sample(idiomas_disponibles, cantidad_idiomas)
+        # se añaden opiniones solo a algunos albergues
+        if rng.random() < 0.5:
+            opiniones = []
+
+            cantidad_opiniones = rng.randint(1, 3)
+
+            for _ in range(cantidad_opiniones):
+                opinion = {
+                    "autor": fake.first_name(),
+                    "nota": rng.randint(1, 5),
+                    "texto": fake.sentence(),
+                }
+                opiniones.append(opinion)
+
+            ficha["opiniones"] = opiniones
+        # indicamos también quién es el titular
+        if rng.random() < 0.4:
+            ficha["titularidad"] = rng.choice([
+                "Xunta de Galicia",
+                "Municipal",
+                "Privada",
+            ])
+        # Algunos albergues tienen datos de contacto y otros no
+        if rng.random() < 0.6:
+            ficha["contacto"] = {
+                "telefono": fake.phone_number(),
+                "web": fake.url(),
+            }
+            
+        fichas.append(ficha)
+
+    return fichas
 
 
 # ------------------------------------------------------------------ carga
