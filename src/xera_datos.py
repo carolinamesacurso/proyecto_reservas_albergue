@@ -344,6 +344,15 @@ def carga_postgres(albergues, peregrinos, reservas):
                     reserva["fecha_desde"],
                     reserva["dias"],
                 ))
+            # actualizamos la secuencia de IDs después de insertar las reservas
+            cur.execute("""
+                SELECT setval(
+                    pg_get_serial_sequence('reservas', 'id_reserva'),
+                    (SELECT MAX(id_reserva) FROM reservas),
+                    true
+                )
+            """)
+
 
     print("Datos cargados correctamente en PostgreSQL.")
 
