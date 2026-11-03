@@ -12,7 +12,8 @@ Exemplos (desde a raíz do proxecto):
 """
 import argparse
 import random
-from datetime import date
+from datetime import date, timedelta
+
 
 from faker import Faker
 
@@ -136,7 +137,55 @@ def xera_reservas(n, albergues, peregrinos, desde, dias, rng):
       - Nun albergue, as reservas dunha noite non poden superar as súas prazas.
       - Un peregrino non pode ter dúas reservas a mesma noite.
     """
-    return pendente("xera_reservas")
+    reservas = []
+
+    # guardamos la ocupación de cada albergue por fecha
+    ocupacion = {}
+
+    # guardamos las noches que ya tiene reservadas cada peregrino
+    noches_peregrinos = {}
+
+    # Intentamos generar las reservas una a una hasta llegar a la cantidad pedida
+    for i in range(1, n + 1):
+        # elegimos uno de los días disponibles dentro del periodo
+        dias_desde_inicio = rng.randint(0, dias - 1)
+        fecha = desde + timedelta(days=dias_desde_inicio)
+        # elegimos al azar quién hace la reserva y en qué albergue
+        peregrino = rng.choice(peregrinos)
+        albergue = rng.choice(albergues)
+        # miramos qué noches tiene ya reservadas este peregrino
+        noches_reservadas = noches_peregrinos.get(peregrino["id"], set())
+
+        # si ya tiene una reserva ese día, probamos con otra combinación
+        if fecha in noches_reservadas:
+            continue
+
+        # usamos el albergue y la fecha para saber cuántas plazas hay ocupadas esa noche
+        clave_ocupacion = (albergue["id"], fecha)
+        plazas_ocupadas = ocupacion.get(clave_ocupacion, 0)
+
+        # si ya están ocupadas todas las plazas, buscamos otra reserva
+        if plazas_ocupadas >= albergue["prazas"]:
+            continue
+
+        # hasta aqui la reserva cumple las dos reglas
+        reserva = {
+            "id": len(reservas) + 1,
+            "peregrino_id": peregrino["id"],
+            "albergue_id": albergue["id"],
+            "fecha": fecha,
+        }
+
+        # se añade la nueva reserva a la lista
+        reservas.append(reserva)
+
+         # actualizamos la ocupación del albergue para esa noche
+        ocupacion[clave_ocupacion] = plazas_ocupadas + 1
+
+        # guardamos también la noche reservada por este peregrino
+        noches_reservadas.add(fecha)
+        noches_peregrinos[peregrino["id"]] = noches_reservadas
+    return reservas
 
 
 def xera_fichas(albergues, rng, fake):
