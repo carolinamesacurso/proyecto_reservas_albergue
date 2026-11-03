@@ -60,6 +60,16 @@ def xera_albergues(n, rng):
 
 
 def xera_peregrinos(n, rng, fake):
+    """TODO ..."""
+
+    # Relacionamos cada país con el idioma que usará Faker
+paises = {
+    "España": "es_ES",
+    "Portugal": "pt_PT",
+    "Alemania": "de_DE",
+}
+
+def xera_peregrinos(n, rng, fake):
     """TODO (primeiro paso): devolve `n` peregrinos.
 
     Cada peregrino é un dicionario con, polo menos: id, nome, apelidos, documento,
@@ -73,8 +83,51 @@ def xera_peregrinos(n, rng, fake):
       - Coidado coa reproducibilidade: fake.date_of_birth() depende da data de hoxe,
         así que mañá xeraría datos distintos coa mesma semente.
     """
-    return pendente("xera_peregrinos")
 
+    # Relacionamos cada país cun idioma de Faker para que os nomes teñan sentido
+    paises = {
+        "España": "es_ES",
+        "Portugal": "pt_PT",
+        "Alemania": "de_DE",
+    }
+
+    # Creamos un Faker para cada país
+    fakers_pais = {
+        pais: Faker(locale)
+        for pais, locale in paises.items()
+    }
+
+    peregrinos = []
+
+    for i in range(1, n + 1):
+        # Elegimos un país al azar y usamos su Faker para generar el nombre
+        pais = rng.choice(list(paises.keys()))
+        fake_pais = fakers_pais[pais]
+
+        nombre = fake_pais.first_name()
+        apellidos = fake_pais.last_name()
+
+        # se genera un número de documento sencillo y distinto para cada peregrino
+        documento = f"DOC{i:06d}"
+        # añadimos el número del peregrino para evitar correos repetidos
+        email = f"peregrino{i}@example.com"
+        # fecha de nacimiento para cada peregrino
+        fecha_nacimiento = fake_pais.date_of_birth()
+
+        peregrino = {
+            "id": i,
+            "nome": nombre,
+            "apelidos": apellidos,
+            "documento": documento,
+            "email": email,
+            "data_nacemento": fecha_nacimiento,
+            "pais": pais,
+        }
+
+        peregrinos.append(peregrino)
+
+    return peregrinos
+    
 
 def xera_reservas(n, albergues, peregrinos, desde, dias, rng):
     """TODO: devolve ata `n` reservas entre `desde` e `desde + dias - 1`.
