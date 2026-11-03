@@ -277,14 +277,7 @@ def xera_fichas(albergues, rng, fake):
                 "Xunta de Galicia",
                 "Municipal",
                 "Privada",
-            ])
-        # Algunos albergues tienen datos de contacto y otros no
-        if rng.random() < 0.6:
-            ficha["contacto"] = {
-                "telefono": fake.phone_number(),
-                "web": fake.url(),
-            }
-            
+            ])    
         fichas.append(ficha)
 
     return fichas
