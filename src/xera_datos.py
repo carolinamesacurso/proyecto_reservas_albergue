@@ -3,6 +3,7 @@ import argparse
 import random
 import os
 import psycopg2
+from pymongo import MongoClient
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
@@ -355,8 +356,29 @@ def carga_postgres(albergues, peregrinos, reservas):
 
 
 def carga_mongo(fichas):
-    """TODO: garda as fichas nunha colección de MongoDB."""
-    pendente("carga_mongo")
+  
+    mongo_user = os.getenv("MONGO_USER")
+    mongo_password = os.getenv("MONGO_PASSWORD")
+    mongo_db = os.getenv("MONGO_DB")
+    mongo_host = os.getenv("MONGO_HOST", "localhost")
+
+    cliente = MongoClient(
+        f"mongodb://{mongo_user}:{mongo_password}@{mongo_host}:27017/"
+    )
+
+    db = cliente[mongo_db]
+    coleccion = db["fichas"]
+
+    # eliminamos los datos anteriores para que cada ejecución
+    # genere un conjunto limpio de fichas
+    coleccion.delete_many({})
+
+    if fichas:
+        coleccion.insert_many(fichas)
+
+    cliente.close()
+
+    print("Fichas cargadas correctamente en MongoDB.")
 
 
 # ------------------------------------------------------------------ main
@@ -380,7 +402,6 @@ def main():
 
     rng = random.Random(args.semente)
     fake = Faker("es_ES")
-    # TODO: Faker tamén ten a súa propia semente. Sen ela, os nomes cambian en cada execución.
 
     print(f"Semente {args.semente} · tempada {args.desde} + {args.dias} noites")
     albergues = xera_albergues(args.albergues, rng)
